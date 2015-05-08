@@ -2,9 +2,9 @@
 
 ChatBox is a small chat service using websockets. 
 
-The php server use Ratchet.
+The php server use [Ratchet](http://socketo.me/).
 
-The javascript client use jQuery, Bootstrap and web-socket-js (for compatibility with old browsers and smartphones)
+The javascript client use [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com/) and [web-socket-js](https://github.com/gimite/web-socket-js) (for compatibility with old browsers and smartphones)
 
 ## Installation
 
