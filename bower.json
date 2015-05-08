@@ -1,0 +1,25 @@
+{
+  "name": "chatbox",
+  "version": "1.0.0",
+  "authors": [
+    "HgO <hgo@batato.be>"
+  ],
+  "description": "A small chat using websockets",
+  "main": "chat.js",
+  "keywords": [
+    "chat",
+    "websocket"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "web-socket-js": "gimite/web-socket-js#~1.0.2",
+    "jquery": "~2.1.4"
+  }
+}
