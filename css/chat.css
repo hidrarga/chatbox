@@ -1,0 +1,47 @@
+#cb_messages {
+    font-family: Tahoma             
+}
+
+#cb_messages date.date {
+    display: block; 
+}
+
+#cb_messages .system {
+    font-style: italic;
+}
+
+#cb_messages .system.error {
+    color: #FF0000;
+}
+
+#cb_messages .system.log, 
+#cb_messages date.date {
+    text-align: center;
+}
+
+#cb_messages date, 
+#cb_messages .system.info,
+#cb_messages .system.log {
+    color: #BDBDBD;
+}
+
+#cb_messages .user .name {
+    font-weight: bold;
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#cb_messages .user .message {
+    display: block;
+    margin-left: 100px;
+}
+
+#cb_messages .user date {
+    float: right;
+}
