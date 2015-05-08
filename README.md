@@ -1,4 +1,4 @@
-== Introduction == 
+## Introduction
 
 ChatBox is a small chat service using websockets. 
 
@@ -6,7 +6,7 @@ The php server use Ratchet.
 
 The javascript client use jQuery, Bootstrap and web-socket-js (for compatibility with old browsers and smartphones)
 
-== Installation ==
+## Installation
 
 All you need to do is running bower and composer.
 
@@ -30,7 +30,7 @@ If you don't have composer installed, run:
 curl -sS https://getcomposer.org/installer | php
 ```
 
-=== Usage ===
+## Usage
 
 Run the server:
 
@@ -43,7 +43,7 @@ Allow flash policy (for compatibility with old browsers and smartphones):
 php bin/flash-server.php
 ```
 
-=== Configuration ===
+## Configuration
 
 You can decide to disable logs by setting `LOGGING` off in `src/ChatBox/Chat.php`.
 
