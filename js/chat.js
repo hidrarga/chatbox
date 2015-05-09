@@ -29,7 +29,7 @@ var DateUtils = {
 
 
 function onOpen() {
-  $('#cb_messages').prepend('<div class="system info">Connexion établie !</div>');
+  $('#cb_messages').prepend('<div class="system info">'+_('connection-opened')+'</div>');
 }
 
 var old_date = null;
@@ -63,22 +63,33 @@ function onMessage(e) {
     
     displayDate(render.date);
     
-    $('#cb_messages').prepend('<div class="system log">Archives</div>');
+    $('#cb_messages').prepend('<div class="system log">'+_('archive')+'</div>');
   }
-  else 
+  else {
+    if(data.message == 'name-changed')
+      data.message = '<span style="color: #'+data.color+';">'+data.from+'</span> ' + _(data.message, {'name' : data.to });
+    else
+      data.message = _(data.message);
+    
     $('#cb_messages').prepend('<div class="system ' + data.type + '">' + data.message + '</div>');
+  }
 }
 
-function onClose() {
-  $('#cb_messages').prepend('<div class="system info">Connexion interrompue</div>');
+function onClose(e) {
+  $('#cb_messages').prepend('<div class="system info">'+_('connection-closed')+'</div>');
 }
 
 function onError(e) {
-  $('#cb_messages').prepend('<div class="system error">' + e.data + "</div>");
+  $('#cb_messages').prepend('<div class="system error">' + _('error') + ': ' + _('connection-error') + "</div>");
 }
 
 
-$(document).ready(function() {
+window.addEventListener('localized', function() {
+  document.documentElement.lang = document.webL10n.getLanguage();
+  document.documentElement.dir = document.webL10n.getDirection();
+});
+
+document.webL10n.ready(function() {
   var websocket = new WebSocket('ws://' + HOSTNAME + ':' + PORT);
 
   websocket.onopen = onOpen;
@@ -89,7 +100,7 @@ $(document).ready(function() {
   $('#cb_form').submit(function() {
     var message = $('#cb_message').val();
     var name = $('#cb_name').val();
-    console.log(message);
+    
     var data = { 
       message : message,
       name : name

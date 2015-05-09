@@ -48,7 +48,7 @@
         
             $this->clients->attach($client, $data);
             
-            echo "Connection établie! ({$client->resourceId})".PHP_EOL;
+            echo "Connexion établie! ({$client->resourceId})".PHP_EOL;
             
             if(!Chat::LOGGING)
                 return;
@@ -66,11 +66,13 @@
         public function onMessage(ConnectionInterface $from, $json_data) {
             $data = json_decode($json_data);
             
-            if(!empty($data)) {
+            if(!empty($data) && !is_null($data->name) && !is_null($data->message)) {
+                $client = $this->clients[$from];
+                
                 $data->name = htmlentities(trim($data->name));
                 if(empty($data->name)) {
                     $from->send(json_encode(array(
-                        'message' => 'Veuillez choisir un pseudo',
+                        'message' => 'name-empty',
                         'type' => 'error'
                     )));
                     return;
@@ -80,7 +82,7 @@
                 $data->message = $this->markup($data->message);
                 if(empty($data->message)) {
                     $from->send(json_encode(array(
-                        'message' => 'Veuillez entrer un message',
+                        'message' => 'message-empty',
                         'type' => 'error'
                     )));
                     return;
@@ -89,10 +91,12 @@
                 $data->color = $this->clients[$from]->color;
                 $data->time = time();
                 
-                $client = $this->clients[$from];
                 if(!empty($client->name) and $client->name != $data->name) {
                     $message = json_encode(array(
-                        'message' => "<span style=\"color: #{$client->color};\">{$client->name}</span> s'appelle désormais {$data->name}",
+                        'message' => 'name-changed',
+                        'color' => $client->color, 
+                        'from' => $client->name, 
+                        'to' => $data->name, 
                         'type' => 'info'
                     ));
                     
@@ -108,17 +112,18 @@
                 
                 if(Chat::LOGGING)
                     $this->logger->write($json_data);
-            }
+            } else
+                $from->close();
         }
         
         public function onClose(ConnectionInterface $client) {
             $this->clients->detach($client);
             
-            echo "Connexion interrompue ({$client->resourceId})".PHP_EOL;
+            echo "Connexion interrompue. ({$client->resourceId})".PHP_EOL;
         }
         
         public function onError(ConnectionInterface $client, \Exception $e) {
-            echo "Erreur: {$e->getMessage()}".PHP_EOL;
+            echo "Erreur: ".$e->getMessage().PHP_EOL;
             
             $client->close();
         }

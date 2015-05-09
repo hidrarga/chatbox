@@ -5,16 +5,21 @@
         <title>ChatBox</title>
         <meta http-equiv="cache-control" content="no-cache">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="resource" type="application/l10n" href="locales/locales.ini" />
+        
         <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/bootstrap-responsive.css" rel="stylesheet">
         <link href="css/chat.css" rel="stylesheet">
-    
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
         
-        <script src="bower_components/web-socket-js/swfobject.js"></script>
-        <script src="bower_components/web-socket-js/web_socket.js"></script>
-        <script src="js/chat.js"></script>
+    
+        <script src="bower_components/jquery/dist/jquery.min.js" defer></script>
+        <script src="js/bootstrap.min.js" defer></script>
+        
+        <script src="bower_components/web-socket-js/swfobject.js" defer></script>
+        <script src="bower_components/web-socket-js/web_socket.js" defer></script>
+        
+        <script src="bower_components/webL10n/l10n.js" defer></script>
+        <script src="js/chat.js" defer></script>
     </head>
     <body>
         <div class="container">
@@ -23,24 +28,24 @@
                     <div class="span12">
                         <p>&nbsp</p>
                         
-                        <h3 id="chat">Chat</h3>
+                        <h3 id="chat" data-l10n-id="chatbox-title">Chat</h3>
                         
                         <div class="alert alert-info">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><i class="icon-thumbs-up"></i></strong> Ce chat est anonyme. Seuls les dix derniers messages sont conserv&eacute;s.
+                            <strong><i class="icon-thumbs-up"></i></strong> <span data-l10n-id="chatbox-infobar">Ce chat est anonyme. Seuls les dix derniers messages sont conservés.</span>
                         </div>
 
                         <form  name="chatbox" id="cb_form" class="well form-inline clearfix">
                             <div class="input-prepend" style="margin:3px;">
                                 <label class="add-on" for="cb_name"><i class="icon-user"></i></label>
-                                <input type="text" name="name" id="cb_name" placeholder="Pseudo" value="Anonyme" />
+                                <input type="text" name="name" id="cb_name" data-l10n-id="input-name" placeholder="Pseudo" value="Anonyme" />
                             </div>
                             <div class="input-prepend" style="margin:3px;">
                                 <label class="add-on" for="cb_message"><i class="icon-pencil"></i></label>
-                                <input type="text" name="message" id="cb_message" placeholder="Votre texte" autocomplete="off" />
+                                <input type="text" name="message" id="cb_message" data-l10n-id="input-message" placeholder="Votre texte" autocomplete="off" />
                             </div>
-                            <button id="send-btn" type="submit" class="btn btn-info"><i class="icon-share-alt icon-white"></i> Chat</button>
-                            <button id="reset-btn" class="btn btn-warning"><i class="icon-trash icon-white"></i> Vider</button>
+                            <button id="send-btn" type="submit" class="btn btn-info"><i class="icon-share-alt icon-white"></i> <span data-l10n-id="button-chat">Chat</span></button>
+                            <button id="reset-btn" class="btn btn-warning"><i class="icon-trash icon-white"></i> <span data-l10n-id="button-reset">Vider</span></button>
                         </form>
                         
                         <div class="thumbnail" id="cb_messages"></div>
