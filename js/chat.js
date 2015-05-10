@@ -1,120 +1,120 @@
-WEB_SOCKET_SWF_LOCATION = "bower_components/web-socket-js/WebSocketMain.swf";
-WEB_SOCKET_DEBUG = true;
+WEB_SOCKET_SWF_LOCATION = "bower_components/web-socket-js/WebSocketMain.swf"
+WEB_SOCKET_DEBUG = true
 
-var HOSTNAME = 'localhost';
-var PORT = '8080';
+var HOSTNAME = 'localhost'
+var PORT = '8080'
+
+String.prototype.pad = function(pad) {
+  return pad.substring(this.length) + this
+}
 
 var DateUtils = {
   'time' : function(date) {
-    var time = [date.getHours(), date.getMinutes(), date.getSeconds()];
-    
-    time[0] = time[0] || 12;
+    var time = [date.getHours(), date.getMinutes(), date.getSeconds()]
     
     for(var i = 0; i < 3; ++i)
-        if(time[i] < 10)
-        time[i] = '0' + time[i];
-        
-    return time.join(':');
+      time[i] = time[i].toString().pad('00')
+            
+    return time.join(':')
   },
   'date' : function(date) {
-    var date = [date.getDate(), date.getMonth()+1, date.getYear()%100];
+    var date = [date.getDate(), date.getMonth()+1, date.getYear()%100]
     
     for(var i = 0; i < 3; ++i)
-        if(date[i] < 10)
-        date[i] = '0' + date[i];
+      date[i] = date[i].toString().pad('00')
         
-    return date.join('/');
+    return date.join('/')
   }
-};
+}
 
 
 function onOpen() {
-  $('#cb_messages').prepend('<div class="system info">'+_('connection-opened')+'</div>');
+  $('#cb_messages').prepend('<div class="system info">'+_('connection-opened')+'</div>')
 }
 
-var old_date = null;
+var old_date = null
 function displayDate(date) {
   if(!old_date || date != old_date) {
     if(old_date)
-      $('#cb_messages').prepend('<date class="date">' + old_date + '</date>');
+      $('#cb_messages').prepend('<date class="date">' + old_date + '</date>')
     
-    old_date = date;
+    old_date = date
   }
 }
 
 function render(data) {
-  var datetime = new Date(data.time * 1000);
-  var time = DateUtils.time(datetime);
-  var date = DateUtils.date(datetime);
+  var datetime = new Date(data.time * 1000)
+  var time = DateUtils.time(datetime)
+  var date = DateUtils.date(datetime)
   
-  displayDate(date);
+  displayDate(date)
   
-  $('#cb_messages').prepend('<div class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp;</span><span class="message"><date>&nbsp;' + time + '</date>' + data.message + '</span></div>');
+  $('#cb_messages').prepend('<div class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp</span><span class="message"><date>&nbsp' + time + '</date>' + data.message + '</span></div>')
 }
 
 function onMessage(e) {
-  var data = JSON.parse(e.data);
+  var data = JSON.parse(e.data)
   
   if(data.name)
-    render(data);
+    render(data)
   else if(data.type == 'log') {
     for(var i = 0; i < data.message.length; ++i)
-      render(data.message[i]); 
+      render(data.message[i]) 
     
-    displayDate(render.date);
+    displayDate(render.date)
     
-    $('#cb_messages').prepend('<div class="system log">'+_('archive')+'</div>');
+    $('#cb_messages').prepend('<div class="system log">'+_('archive')+'</div>')
   }
   else {
     if(data.message == 'name-changed')
-      data.message = '<span style="color: #'+data.color+';">'+data.from+'</span> ' + _(data.message, {'name' : data.to });
+      data.message = '<span style="color: #'+data.color+'">'+data.from+'</span> ' + _(data.message, {'name' : data.to })
     else
-      data.message = _(data.message);
+      data.message = _(data.message)
     
-    $('#cb_messages').prepend('<div class="system ' + data.type + '">' + data.message + '</div>');
+    $('#cb_messages').prepend('<div class="system ' + data.type + '">' + data.message + '</div>')
   }
 }
 
 function onClose(e) {
-  $('#cb_messages').prepend('<div class="system info">'+_('connection-closed')+'</div>');
+  $('#cb_messages').prepend('<div class="system info">'+_('connection-closed')+'</div>')
 }
 
 function onError(e) {
-  $('#cb_messages').prepend('<div class="system error">' + _('error') + ': ' + _('connection-error') + "</div>");
+  $('#cb_messages').prepend('<div class="system error">' + _('error') + ': ' + _('connection-error') + "</div>")
 }
 
 
 window.addEventListener('localized', function() {
-  document.documentElement.lang = document.webL10n.getLanguage();
-  document.documentElement.dir = document.webL10n.getDirection();
-});
+  document.documentElement.lang = document.webL10n.getLanguage()
+  document.documentElement.dir = document.webL10n.getDirection()
+})
 
 document.webL10n.ready(function() {
-  var websocket = new WebSocket('ws://' + HOSTNAME + ':' + PORT);
+  var websocket = new WebSocket('ws://' + HOSTNAME + ':' + PORT)
 
-  websocket.onopen = onOpen;
-  websocket.onmessage = onMessage;
-  websocket.onclose = onClose;
-  websocket.onerror = onError;
+  websocket.onopen = onOpen
+  websocket.onmessage = onMessage
+  websocket.onclose = onClose
+  websocket.onerror = onError
   
   $('#cb_form').submit(function() {
-    var message = $('#cb_message').val();
-    var name = $('#cb_name').val();
+    var message = $('#cb_message').val()
+    var name = $('#cb_name').val()
     
     var data = { 
       message : message,
       name : name
-    };
+    }
         
-    websocket.send(JSON.stringify(data));
+    websocket.send(JSON.stringify(data))
     
-    $('#cb_message').val('');
+    $('#cb_message').val('')
     
-    return false;
-  });
+    return false
+  })
   
   $('#reset-btn').click(function() {
-      $('#cb_messages').empty();
-      return false;
-  });
-});
+    $('#cb_messages').empty()
+    return false
+  })
+})
