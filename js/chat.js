@@ -36,7 +36,7 @@ var old_date = null
 function displayDate(date) {
   if(!old_date || date != old_date) {
     if(old_date)
-      $('#cb_messages').prepend('<date class="date">' + old_date + '</date>')
+      $('#cb_messages').prepend('<hr /><date class="date">' + old_date + '</date>')
     
     old_date = date
   }

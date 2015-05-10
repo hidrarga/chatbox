@@ -1,3 +1,8 @@
+html, body {
+    min-width: 252px;   
+    width: auto;
+}
+
 #cb_messages {
     font-family: Tahoma             
 }
@@ -46,4 +51,15 @@
 
 #cb_messages .user date {
     float: right;
+}
+
+#cb_messages hr {
+    margin: 0;
+}
+
+@media (max-width: 360px) {
+    #cb_messages .system.info,
+    #cb_messages .system.error {
+        margin-left: 0;
+    }
 }
