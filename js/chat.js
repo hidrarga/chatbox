@@ -33,7 +33,7 @@ function onOpen() {
 }
 
 var old_date = null
-function displayDate(date) {
+function printDate(date) {
   if(!old_date || date != old_date) {
     if(old_date)
       $('#cb_messages').prepend('<hr /><date class="date">' + old_date + '</date>')
@@ -42,45 +42,57 @@ function displayDate(date) {
   }
 }
 
+function markup(text) {
+
+}
+
 function render(data) {
   var datetime = new Date(data.time * 1000)
   var time = DateUtils.time(datetime)
   var date = DateUtils.date(datetime)
   
-  displayDate(date)
+  printDate(date)
   
-  $('#cb_messages').prepend('<div class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp</span><span class="message"><date>&nbsp' + time + '</date>' + data.message + '</span></div>')
+  $('#cb_messages').prepend('<p class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp</span><span class="message"><date>&nbsp' + time + '</date>' + data.message + '</span></p>')
+}
+
+function logs(data) {
+  for(var i = 0; i < data.message.length; ++i)
+    render(data.message[i]) 
+    
+  printDate(render.date)
+    
+  $('#cb_messages').prepend('<p class="system '+ data.type +'">'+ _('archive') +'</p>')
+}
+
+function system(data) {
+  var time = ''
+  if(data.time) {
+    var datetime = new Date(data.time * 1000)
+    time = DateUtils.time(datetime)
+  }
+  
+  $('#cb_messages').prepend('<p class="system ' + data.type + '">' + _(data.message, data) + '<date>&nbsp' + time + '</date></p>')  
+}
+
+var Service = {
+  chat: render,
+  log: logs,
+  info: system,
+  error: system
 }
 
 function onMessage(e) {
   var data = JSON.parse(e.data)
-  
-  if(data.name)
-    render(data)
-  else if(data.type == 'log') {
-    for(var i = 0; i < data.message.length; ++i)
-      render(data.message[i]) 
-    
-    displayDate(render.date)
-    
-    $('#cb_messages').prepend('<div class="system log">'+_('archive')+'</div>')
-  }
-  else {
-    if(data.message == 'name-changed')
-      data.message = '<span style="color: #'+data.color+'">'+data.from+'</span> ' + _(data.message, {'name' : data.to })
-    else
-      data.message = _(data.message)
-    
-    $('#cb_messages').prepend('<div class="system ' + data.type + '">' + data.message + '</div>')
-  }
+  Service[data.type](data)
 }
 
 function onClose(e) {
-  $('#cb_messages').prepend('<div class="system info">'+_('connection-closed')+'</div>')
+  $('#cb_messages').prepend('<p class="system info">'+_('connection-closed')+'</p>')
 }
 
 function onError(e) {
-  $('#cb_messages').prepend('<div class="system error">' + _('error') + ': ' + _('connection-error') + "</div>")
+  $('#cb_messages').prepend('<p class="system error">' + _('connection-error') + "</p>")
 }
 
 
@@ -101,7 +113,7 @@ document.webL10n.ready(function() {
     var message = $('#cb_message').val()
     var name = $('#cb_name').val()
     
-    var data = { 
+    var data = {
       message : message,
       name : name
     }
@@ -117,4 +129,6 @@ document.webL10n.ready(function() {
     $('#cb_messages').empty()
     return false
   })
+  
+  document.websocket = websocket
 })

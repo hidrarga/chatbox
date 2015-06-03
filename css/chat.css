@@ -16,7 +16,7 @@ html, body {
 }
 
 #cb_messages .system.error {
-    color: #FF0000;
+     color: #A94442;
 }
 
 #cb_messages .system.log, 
@@ -49,11 +49,17 @@ html, body {
     margin-left: 100px;
 }
 
-#cb_messages .user date {
+#cb_messages .user date,
+#cb_messages .system date {
     float: right;
+    font-style: normal;
 }
 
 #cb_messages hr {
+    margin: 5px 0;
+}
+
+#cb_messages p {
     margin: 0;
 }
 
