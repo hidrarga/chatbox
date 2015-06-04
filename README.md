@@ -38,13 +38,14 @@ Run the server:
 php bin/server.php
 ```
 
-Allow flash policy (for compatibility with old browsers and smartphones):
-```php
-php bin/flash-server.php
-```
-
 ## Configuration
+
+### Server
 
 You can decide to disable logs by setting `LOGGING` off in `src/ChatBox/Chat.php`.
 
 You can change the number of message stored in the log file by editing `LENGTH` in `src/ChatBox/Logger.php`.
+
+### Client
+
+Don't forget to change the hostname and the location of WebSocketMain.swf in `js/chat.js`
