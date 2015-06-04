@@ -1,6 +1,6 @@
 {
     "name": "hidrarga/chatbox",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "description": "A small chat using websockets",
     "license": "GPLv3",
     "authors": [
