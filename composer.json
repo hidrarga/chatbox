@@ -1,9 +1,20 @@
 {
+    "name": "hidrarga/chatbox",
+    "description": "A small chat using websockets",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "HgO",
+            "email": "hgo@batato.be"
+        }
+    ],
+    "minimum-stability": "stable",
     "autoload": {
         "psr-0": {
-            "ChatBox" : "src"
-        }
+	    "ChatBox" : "src"
+	}
     },
+    "bin" : ["bin/server.php"],
     "require": {
         "cboden/ratchet": "0.3.*"
     }
