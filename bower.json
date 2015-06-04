@@ -20,9 +20,9 @@
     "bower_components",
     "test",
     "tests",
-    "bin",
-    "src",
-    "composer.*"
+    "/bin",
+    "/src",
+    "/composer.json"
   ],
   "dependencies": {
     "web-socket-js": "gimite/web-socket-js#~1.0.2",
