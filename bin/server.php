@@ -9,7 +9,9 @@
     
     use ChatBox\Chat;
     
-    require dirname(__DIR__).'/vendor/autoload.php';
+    $directory = (count($_SERVER['argv']) > 1) ? $_SERVER['argv'][1].'/' : '';
+    
+    require $directory.'vendor/autoload.php';
     
     $loop = Factory::create();
  

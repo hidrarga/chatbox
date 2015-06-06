@@ -38,7 +38,9 @@
         
         public function __construct() {
             $this->clients = new \SplObjectStorage;
-            $this->logger = new Logger(Chat::LOG_FILE);
+            
+            $directory = (count($_SERVER['argv']) > 1) ? $_SERVER['argv'][1].'/' : '';
+            $this->logger = new Logger($directory.Chat::LOG_FILE);
             
             $this->services = array(
                 'chat' => 'chatService',

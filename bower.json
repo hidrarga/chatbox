@@ -25,7 +25,7 @@
     "/composer.json"
   ],
   "dependencies": {
-    "web-socket-js": "gimite/web-socket-js#~1.0.2",
+    "web-socket-js": "master",
     "jquery": "~2.1.4",
     "webL10n": "git://github.com/fabi1cazenave/webL10n",
     "bootstrap": "~3.3.4"
