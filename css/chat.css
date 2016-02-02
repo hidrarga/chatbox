@@ -11,7 +11,8 @@ html, body {
     display: block; 
 }
 
-#cb_messages .system {
+#cb_messages .system,
+#cb_users .system {
     font-style: italic;
 }
 
@@ -20,26 +21,36 @@ html, body {
 }
 
 #cb_messages .system.log, 
-#cb_messages date.date {
+#cb_messages date.date,
+#cb_users .system.info {
     text-align: center;
 }
 
 #cb_messages date, 
 #cb_messages .system.info,
+#cb_users .system.info,
 #cb_messages .system.log {
-    color: #BDBDBD;
+    color: #A8A8A8;
 }
 
-#cb_messages .user .name {
+#cb_messages .user .name,
+#cb_users .user .name {
     font-weight: bold;
-    display: inline-block;
-    width: 100px;
-    text-align: right;
     
-    float: left;
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#cb_messages .user .name {
+    width: 100px;
+    text-align: right;
+    float: left;
+}
+
+#cb_users .user .name {
+    padding-left: 10px;
 }
 
 #cb_messages .user .message,
@@ -55,7 +66,8 @@ html, body {
     font-style: normal;
 }
 
-#cb_messages hr {
+#cb_messages hr,
+#cb_users hr {
     margin: 5px 0;
 }
 

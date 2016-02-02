@@ -52,7 +52,7 @@
             $color = array();
             
             for($i = 0; $i < 3; ++$i)
-                $color[] = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+                $color[] = str_pad(dechex(mt_rand(0, 200)), 2, '0', STR_PAD_LEFT);
             
             
             return implode('', $color);
@@ -73,19 +73,32 @@
             if(empty($response->message))
                 throw new ChatBoxException('message-empty');
                     
-            if(!empty($client->name) and $client->name != $response->name) {
+            if(empty($client->name))
+            {
+                $message = json_encode(array(
+                    'name' => $response->name,
+                    'color' => $client->color,
+                    'id' => $from->resourceId,
+                    'type' => 'addUser'
+                ));
+                
+                foreach($this->clients as $c)
+                    $c->send($message);
+            } elseif($client->name != $response->name) 
+            {
                 $message = json_encode(array(
                     'message' => 'name-changed',
                     'color' => $client->color, 
                     'from' => $client->name, 
-                    'to' => $response->name,
-                    'type' => 'info'
+                    'name' => $response->name,
+                    'id' => $from->resourceId,
+                    'type' => 'modName'
                 ));
                         
                 foreach($this->clients as $c)
-                    if($c != $from)
-                        $c->send($message);
+                    $c->send($message);
             }
+            
             $client->name = $response->name;
             
             $response->color = $this->clients[$from]->color;
@@ -131,6 +144,19 @@
             
             echo "Connexion établie! ({$client->resourceId})".PHP_EOL;
             
+            foreach($this->clients as $c)
+                if($c != $client)
+                {
+                    $d = $this->clients[$c];
+                    if(!empty($d->name))
+                        $client->send(json_encode(array(
+                            'name' => $d->name,
+                            'color' => $d->color,
+                            'id' => $c->resourceId,
+                            'type' => 'addUser'
+                        )));
+                }
+            
             if(!Chat::LOGGING)
                 return;
             
@@ -172,10 +198,26 @@
             }
         }
         
-        public function onClose(ConnectionInterface $client) {
-            $this->clients->detach($client);
+        public function onClose(ConnectionInterface $from) {
+            $client = $this->clients[$from];
             
-            echo "Connexion interrompue. ({$client->resourceId})".PHP_EOL;
+            if(!empty($client->name))
+            {
+                $json_data = json_encode(array(
+                    'name' => $client->name,
+                    'color' => $client->color,
+                    'id' => $from->resourceId,
+                    'type' => 'delUser'
+                ));
+                
+                foreach($this->clients as $c)
+                    if($c != $from)
+                        $c->send($json_data);
+            }
+            
+            $this->clients->detach($from);
+            
+            echo "Connexion interrompue. ({$from->resourceId})".PHP_EOL;
         }
         
         public function onError(ConnectionInterface $client, \Exception $e) {

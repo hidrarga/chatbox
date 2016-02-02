@@ -75,10 +75,33 @@ function system(data) {
   $('#cb_messages').prepend('<p class="system ' + data.type + '">' + _(data.message, data) + '<date>&nbsp' + time + '</date></p>')  
 }
 
+function modName(data) {
+  system(data)
+  
+  $('#cb_user_' + data.id + ' > span').text(data.name)
+}
+
+function addUser(data) {
+  if($('#cb_users span').length == 0)
+    $('#cb_users').toggleClass('hidden')
+    
+  $('#cb_users').append('<div class="user" id="cb_user_' + data.id + '"><span class="name" style="color: #' + data.color + '">' + data.name + '</span></div>')  
+}
+
+function delUser(data) {
+  $('#cb_user_' + data.id).remove()  
+  
+  if($('#cb_users span').length == 0)
+      $('#cb_users').toggleClass('hidden')
+}
+
 var Service = {
   chat: render,
   log: logs,
   info: system,
+  addUser: addUser,
+  delUser: delUser,
+  modName: modName,
   error: system
 }
 
