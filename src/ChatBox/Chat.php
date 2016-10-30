@@ -107,9 +107,11 @@
             
             $json_data = json_encode($response);
             foreach($this->clients as $c)
-                $c->send($json_data);
+                // private chat
+                if(empty($data->to) or $c->resourceId == $from->resourceId or in_array($c->resourceId, $data->to))
+                    $c->send($json_data);
                     
-            if(Chat::LOGGING)
+            if(Chat::LOGGING and empty($data->to))
                 $this->logger->write($json_data);
         }
         
