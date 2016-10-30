@@ -79,7 +79,8 @@
                 ));
                 
                 foreach($this->clients as $c)
-                    $c->send($message);
+                    if($c != $from)
+                        $c->send($message);
             } elseif($client->name != $response->name) 
             {
                 $message = json_encode(array(
@@ -105,13 +106,15 @@
             $response->time = time();
             $response->type = 'chat';
             
+            $to = (array) $data->to;
+            
             $json_data = json_encode($response);
             foreach($this->clients as $c)
                 // private chat
-                if(empty($data->to) or $c->resourceId == $from->resourceId or in_array($c->resourceId, $data->to))
+                if(empty($to) or $c->resourceId == $from->resourceId or isset($data->to->{$c->resourceId}))
                     $c->send($json_data);
                     
-            if(Chat::LOGGING and empty($data->to))
+            if(Chat::LOGGING and empty($to))
                 $this->logger->write($json_data);
         }
         
@@ -144,23 +147,29 @@
         
         public function onOpen(ConnectionInterface $client) {
             $data = new Data($this->generateColor());
-        
-            $this->clients->attach($client, $data);
             
             echo "Connexion établie! ({$client->resourceId})".PHP_EOL;
             
+            $client->send(json_encode(array(
+                'color' => $data->color,
+                'id' => $client->resourceId,
+                'type' => 'welcome'
+            )));
+            
             foreach($this->clients as $c)
-                if($c != $client)
-                {
-                    $d = $this->clients[$c];
-                    if(!empty($d->name))
-                        $client->send(json_encode(array(
-                            'name' => $d->name,
-                            'color' => $d->color,
-                            'id' => $c->resourceId,
-                            'type' => 'addUser'
-                        )));
-                }
+            {
+                $d = $this->clients[$c];
+                if(!empty($d->name))
+                    $client->send(json_encode(array(
+                        'name' => $d->name,
+                        'color' => $d->color,
+                        'id' => $c->resourceId,
+                        'type' => 'addUser'
+                    )));
+                
+            }
+            
+            $this->clients->attach($client, $data);
             
             if(!Chat::LOGGING)
                 return;

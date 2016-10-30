@@ -85,14 +85,34 @@ function addUser(data) {
   if($('#cb_users span').length == 0)
     $('#cb_users').toggleClass('hidden')
     
-  $('#cb_users').append('<div class="user" id="cb_user_' + data.id + '"><span class="name" style="color: #' + data.color + '">' + data.name + '</span></div>')  
+  var user = $('<div class="user" id="cb_user_' + data.id + '" data-cb-user="' + data.id + '"><span class="name" style="color: #' + data.color + '">' + data.name + '</span></div>').click(selectUser)
+  
+  $('#cb_users').append(user)
 }
 
 function delUser(data) {
   $('#cb_user_' + data.id).remove()  
   
+  delete cb_data.to[data.id]
+  
   if($('#cb_users span').length == 0)
-      $('#cb_users').toggleClass('hidden')
+    $('#cb_users').toggleClass('hidden')
+}
+
+function selectUser() {
+  var id = parseInt($(this).attr('data-cb-user'))
+
+  $(this).toggleClass('selected')
+
+  if($(this).hasClass('selected'))
+    cb_data.to[id] = 0
+  else
+    delete cb_data.to[id]
+}
+
+function welcomeInfo(data) {
+  cb_data.id = data.id
+  cb_data.color = data.color
 }
 
 var Service = {
@@ -101,6 +121,7 @@ var Service = {
   info: system,
   addUser: addUser,
   delUser: delUser,
+  welcome: welcomeInfo,
   modName: modName,
   error: system
 }
@@ -124,6 +145,10 @@ window.addEventListener('localized', function() {
   document.documentElement.dir = document.webL10n.getDirection()
 })
 
+var cb_data = { 
+    to : {}
+}
+
 document.webL10n.ready(function() {
   var websocket = new WebSocket('ws://' + HOSTNAME + ':' + PORT)
 
@@ -134,15 +159,17 @@ document.webL10n.ready(function() {
   
   $('#cb_form').submit(function() {
     var message = $('#cb_message').val()
-    var name = $('#cb_name').val()
+    cb_data.name = $('#cb_name').val()
     
     var data = {
       message : message,
-      name : name
+      name : cb_data.name,
+      to : cb_data.to
     }
-        
+    
     websocket.send(JSON.stringify(data))
     
+    $('#cb_name').css('color', '#' + cb_data.color)
     $('#cb_message').val('')
     
     return false

@@ -53,6 +53,15 @@ html, body {
     padding-left: 10px;
 }
 
+#cb_users .user.selected {
+    background-color: #d9edf7;
+}
+
+#cb_users .user {
+    cursor: pointer;
+}
+
+
 #cb_messages .user .message,
 #cb_messages .system.info,
 #cb_messages .system.error {
