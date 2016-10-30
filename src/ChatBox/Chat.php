@@ -69,10 +69,6 @@
             if(empty($response->name))
                 throw new ChatBoxException('name-empty');
                     
-            $response->message = htmlentities(trim($data->message));
-            if(empty($response->message))
-                throw new ChatBoxException('message-empty');
-                    
             if(empty($client->name))
             {
                 $message = json_encode(array(
@@ -94,12 +90,16 @@
                     'id' => $from->resourceId,
                     'type' => 'modName'
                 ));
-                        
+                
                 foreach($this->clients as $c)
                     $c->send($message);
             }
             
             $client->name = $response->name;
+            
+            $response->message = htmlentities(trim($data->message));
+            if(empty($response->message))
+                return;
             
             $response->color = $this->clients[$from]->color;
             $response->time = time();
@@ -135,6 +135,9 @@
             $json_data = json_encode($response);
             foreach($this->clients as $c)
                 $c->send($json_data);
+                
+            if(Chat::LOGGING)
+                $this->logger->write($json_data);
         }
         
         public function onOpen(ConnectionInterface $client) {

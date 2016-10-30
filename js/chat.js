@@ -58,7 +58,7 @@ function render(data) {
 
 function logs(data) {
   for(var i = 0; i < data.message.length; ++i)
-    render(data.message[i]) 
+    Service[data.message[i].type](data.message[i]) 
     
   printDate(render.date)
     
