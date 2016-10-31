@@ -43,7 +43,41 @@ function printDate(date) {
 }
 
 function markup(text) {
-
+  // ------- TXT2TAGS to html //
+  text = text.replace(/&quot;/gi, '"')
+  
+  // ------ bold / strong **item** (we disable them for ``code``)
+  // by using negative lookahead see http://www.regular-expressions.info/lookaround.html
+  // don't use [^``] which "eat" characters
+  text = text.replace(/(?!``)?\*\*([^\s](.*?[^\s])?)\*\*(?!``)/g, '<b>$1</b>')
+  // ------ underline     __item__
+  text = text.replace(/(?!``)__([^\s](.*?[^\s])?)__(?!``)/g, '<u>$1</u>')
+  // ------ strikeout     --item--
+  text = text.replace(/(?!``)--([^\s](.*?[^\s])?)--(?!``)/g, '<del>$1</del>')
+  text = text.replace(/(?!``)~~([^\s](.*?[^\s])?)~~(?!``)/g, '<del>$1</del>')
+  // ------ italic /em    //item//
+  text = text.replace(/(?!``)\/\/([^\s](.*?[^\s])?)\/\/(?!``)/g, '<i>$1</i>')
+  
+  // ------ normal link   [item http://url] 
+  text = text.replace(/\[(.*?) (https|http|ftps|sftp|ftp):\/\/(.*)?\]/g, '<a href="MY$2$3">$1</a>')
+  text = text.replace(/\[(.*?) (www\.)(.*)?\]/g, '<a href="MYhttp$2$3">$1</a>')
+  // local links
+  text = text.replace(/\[(.*) ([^ ].*?)\]/g, '<a href="$2">$1</a>')
+  
+  // ------ lazy link
+  text = text.replace(/([\s']|\w"|^)(www\.(.*?[^'"\s])+)/gi,"$1<a href=\"MYhttp$2\">$2</a>")
+        
+  // ------ auto link     http://url
+  text = text.replace(/((https|http|ftps|sftp|ftp):\/\/[^'"\s]+)/gi,'<a href="$1">$1</a>')
+  
+  
+  // revert protected http://
+  text = text.replace(/MY(https|http|ftps|sftp|ftp)/g, '$1:\/\/')
+  
+  // ------ code     ``item``
+  text = text.replace(/``([^\s](.*?[^\s])?)``/g, '<code>$1</code>')
+  
+  return text
 }
 
 function render(data) {
@@ -53,7 +87,7 @@ function render(data) {
   
   printDate(date)
   
-  $('#cb_messages').prepend('<p class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp</span><span class="message"><date>&nbsp' + time + '</date>' + data.message + '</span></p>')
+  $('#cb_messages').prepend('<p class="user"><span class="name" style="color: #'+ data.color + ';">' + data.name + '&nbsp</span><span class="message"><date>&nbsp' + time + '</date>' + markup(data.message) + '</span></p>')
 }
 
 function logs(data) {
